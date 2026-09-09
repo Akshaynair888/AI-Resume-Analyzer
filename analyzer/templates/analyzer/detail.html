@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis Details</title>
+    <link rel="stylesheet" href="{% static 'analyzer/style.css' %}">
+</head>
+
+<body>
+
+<nav>
+    <a href="{% url 'upload_resume' %}">Resume Analyzer</a>
+    <a href="{% url 'analysis_history' %}">Analysis History</a>
+</nav>
+
+<div class="container">
+
+    <h1>Analysis Details</h1>
+
+    <div class="card">
+        <h2>{{ analysis.resume_name }}</h2>
+
+        <p>
+            <strong>Analyzed:</strong>
+            {{ analysis.created_at }}
+        </p>
+    </div>
+
+    <div class="scores">
+
+        <div class="score-card">
+            <h3>Overall</h3>
+            <div class="score">{{ analysis.overall_score }}%</div>
+        </div>
+
+        <div class="score-card">
+            <h3>Skill Match</h3>
+            <div class="score">{{ analysis.match_score }}%</div>
+        </div>
+
+        <div class="score-card">
+            <h3>Semantic</h3>
+            <div class="score">{{ analysis.semantic_score }}%</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h2>Matched Skills</h2>
+        <p>{{ analysis.matched_skills }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Missing Skills</h2>
+        <p>{{ analysis.missing_skills }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Relevant Experience</h2>
+        <pre>{{ analysis.relevant_experience }}</pre>
+    </div>
+
+    <div class="card">
+        <h2>AI Analysis</h2>
+        <pre>{{ analysis.ai_analysis }}</pre>
+    </div>
+
+    <div class="card">
+        <h2>Job Description</h2>
+        <pre>{{ analysis.job_description }}</pre>
+    </div>
+
+    <a href="{% url 'analysis_history' %}">
+        ← Back to Analysis History
+    </a>
+
+</div>
+
+</body>
+</html>

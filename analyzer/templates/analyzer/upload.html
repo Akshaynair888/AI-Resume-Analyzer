@@ -1,0 +1,147 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Analyzer</title>
+    <link rel="stylesheet" href="{% static 'analyzer/style.css' %}">
+</head>
+
+<body>
+{% if messages %}
+    {% for message in messages %}
+        <div class="card">
+            <p><strong>{{ message }}</strong></p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<nav>
+    <a href="{% url 'upload_resume' %}">Resume Analyzer</a>
+    <a href="{% url 'analysis_history' %}">Analysis History</a>
+</nav>
+
+<div class="container">
+
+    <h1>AI Resume Analyzer</h1>
+
+    <div class="card">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label><strong>Select Resume (PDF)</strong></label>
+            <input type="file" name="resume" accept=".pdf" required>
+
+            <br><br>
+
+            <label><strong>Job Description</strong></label>
+
+            <textarea
+                name="job_description"
+                rows="12"
+                placeholder="Paste the job description here..."
+                required
+            ></textarea>
+
+            <br><br>
+
+            <button type="submit">Analyze Resume</button>
+
+        </form>
+
+    </div>
+
+    {% if overall_score is not None %}
+
+        <div class="scores">
+
+            <div class="score-card">
+                <h3>Overall Score</h3>
+                <div class="score">{{ overall_score }}%</div>
+            </div>
+
+            <div class="score-card">
+                <h3>Skill Match</h3>
+                <div class="score">{{ match_score }}%</div>
+            </div>
+
+            <div class="score-card">
+                <h3>Semantic Match</h3>
+                <div class="score">{{ semantic_score }}%</div>
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    {% if matched_skills %}
+        <div class="card">
+            <h2>Matched Skills</h2>
+
+            <div class="skill-list">
+                {% for skill in matched_skills %}
+                    <span class="skill">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if missing_skills %}
+        <div class="card">
+            <h2>Skill Gaps</h2>
+
+            <div class="skill-list">
+                {% for skill in missing_skills %}
+                    <span class="skill">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if relevant_experience %}
+        <div class="card">
+
+            <h2>Relevant Experience</h2>
+
+            <ul>
+                {% for experience in relevant_experience %}
+                    <li>{{ experience }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% endif %}
+
+
+    {% if ai_analysis %}
+        <div class="card">
+
+            <h2>AI Analysis</h2>
+
+            <h3>Strengths</h3>
+
+            <ul>
+                {% for skill in ai_analysis.strengths %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Recommendations</h3>
+
+            <ul>
+                {% for recommendation in ai_analysis.recommendations %}
+                    <li>{{ recommendation }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

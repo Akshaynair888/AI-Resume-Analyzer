@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis History</title>
+    <link rel="stylesheet" href="{% static 'analyzer/style.css' %}">
+</head>
+
+<body>
+
+<nav>
+    <a href="{% url 'upload_resume' %}">Resume Analyzer</a>
+    <a href="{% url 'analysis_history' %}">Analysis History</a>
+</nav>
+
+<div class="container">
+
+    <h1>Analysis History</h1>
+
+    {% if analyses %}
+
+        {% for analysis in analyses %}
+
+            <div class="history-item">
+
+                <a href="{% url 'analysis_detail' analysis.id %}">
+                    {{ analysis.resume_name }}
+                </a>
+
+                <p>
+                    <strong>Overall Match:</strong>
+                    {{ analysis.overall_score }}%
+                </p>
+
+                <p>
+                    <strong>Skill Match:</strong>
+                    {{ analysis.match_score }}%
+                </p>
+
+                <p>
+                    <strong>Semantic Match:</strong>
+                    {{ analysis.semantic_score }}%
+                </p>
+
+                <p>
+                    <strong>Analyzed:</strong>
+                    {{ analysis.created_at }}
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card">
+            <p>No analyses found.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
