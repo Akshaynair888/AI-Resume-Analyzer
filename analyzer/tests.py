@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .utils import ( calculate_overall_score, find_skills, extract_text_from_pdf, calculate_semantic_score, )
+from .utils import ( calculate_overall_score, find_skills, extract_text_from_pdf, calculate_semantic_score, generate_ai_analysis )
 
 
 class OverallScoreTest(TestCase):
@@ -40,7 +40,18 @@ class FindSkillsTest(TestCase):
 class ExtractTextTest(TestCase):
 
     def test_extract_text_from_pdf(self):
-        self.assertTrue(callable(extract_text_from_pdf))
+        from unittest.mock import patch, MagicMock
+
+        mock_page = MagicMock()
+        mock_page.extract_text.return_value = "Python Django Developer"
+
+        mock_reader = MagicMock()
+        mock_reader.pages = [mock_page]
+
+        with patch("analyzer.utils.PdfReader", return_value=mock_reader):
+            result = extract_text_from_pdf("dummy.pdf")
+
+        self.assertIn("Python Django Developer", result)
 
 class SemanticScoreTest(TestCase):
 
@@ -52,3 +63,21 @@ class SemanticScoreTest(TestCase):
 
         self.assertGreater(score, 0)
         self.assertLessEqual(score, 100)
+
+class AIAnalysisTest(TestCase):
+
+    def test_ai_analysis_with_missing_skills(self):
+        matched = ["python", "django"]
+        missing = ["aws", "docker"]
+
+        result = generate_ai_analysis(
+            "Python Django developer",
+            "Looking for Python Django AWS Docker developer",
+            matched,
+            missing
+        )
+
+        self.assertIn("python", result["strengths"])
+        self.assertIn("aws", result["skill_gaps"])
+        self.assertIn("docker", result["skill_gaps"])
+        self.assertGreater(len(result["recommendations"]), 0)
